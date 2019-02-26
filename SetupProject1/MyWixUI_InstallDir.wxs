@@ -35,14 +35,17 @@ First-time install dialog sequence:      Maintenance dialog sequence:
 
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
-      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="MyInstallDirDlg">1</Publish>
 
       <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
       <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="MyInstallDirDlg">LicenseAccepted = "1"</Publish>
 
-      <Publish Dialog="MyInstallDirDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+      <Publish Dialog="MyInstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
     <!--  <Publish Dialog="MyInstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish> -->
       <Publish Dialog="MyInstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">1</Publish>
+      <Publish Dialog="MyInstallDirDlg" Control="Next" Event="DoAction" Value="MyCustomAction2" Order="2">1</Publish>
+      
+
       <!--<Publish Dialog="MyInstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>-->
     <!--  <Publish Dialog="MyInstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>-->
 
@@ -57,6 +60,22 @@ First-time install dialog sequence:      Maintenance dialog sequence:
 
       <Property Id="ARPNOMODIFY" Value="1" />
     </UI>
+    <Binary Id ="myAction1" SourceFile="..\CustomDrop\bin\Debug\CustomDrop.CA.dll"/>
+
+    <CustomAction Id="MyCustomAction2"
+
+		BinaryKey="myAction1"
+
+		DllEntry="CustomAction1"
+
+		Execute="immediate"
+
+		Return="check" />
+
+
+
+
+   
 
     <UIRef Id="WixUI_Common" />
   </Fragment>

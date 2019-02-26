@@ -4,58 +4,75 @@
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 
-   <UIRef Id="MyWixUI_InstallDir"/>
+		<Binary Id ="myAction" SourceFile="..\customaction1\bin\Debug\MyCustomAction.CA.dll"/>
+
+	 <UIRef Id="MyWixUI_InstallDir" />
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 	<MediaTemplate EmbedCab="yes" />
 
 		<Feature Id="ProductFeature" Title="My Wpf Application" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ApplicationShortcut"/>
-      <ComponentRef Id="ApplicationShortcutDesktop"/>
-     
+			<ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="ApplicationShortcutDesktop" />
+		 
 		</Feature>
-    <!--new code 1-->
-   <!--
-      <UI>
-        <UIRef Id="WixUI_FeatureTree" />
-        <ComboBox Property="WIX_VERSIONS">
-          <ListItem Value="Windows Installer XML 3.0" />
-          <ListItem Value="Windows Installer XML 3.5" />
-          <ListItem Value="Windows Installer XML 3.6" />
-        </ComboBox>
-        <Dialog Id="MyCustomDlg"  Width="500" Height="260">
-          <Control Id="ComboBoxMain" Type="ComboBox" X="10" Y="60" Width="300" Height="17" Property="WIX_VERSIONS" />
-          <Control Id="ButtonMain" Type="PushButton" X="320" Y="60" Width="40" Height="17" Text="Show">
-            <Publish Property="COMBOVALUEFORMATTED" Order="1"  Value="You've chosen the [WIX_VERSIONS] version of the toolset" />
-          </Control>
-          <Control Id="LabelMain" Type="Text" X="10" Y="80" Width="360" Height="17" Property="COMBOVALUEFORMATTED" Text="[COMBOVALUEFORMATTED]" />
+		<!--new code 1-->
+	 <!--
+			<UI>
+				<UIRef Id="WixUI_FeatureTree" />
+				<ComboBox Property="WIX_VERSIONS">
+					<ListItem Value="Windows Installer XML 3.0" />
+					<ListItem Value="Windows Installer XML 3.5" />
+					<ListItem Value="Windows Installer XML 3.6" />
+				</ComboBox>
+				<Dialog Id="MyCustomDlg"  Width="500" Height="260">
+					<Control Id="ComboBoxMain" Type="ComboBox" X="10" Y="60" Width="300" Height="17" Property="WIX_VERSIONS" />
+					<Control Id="ButtonMain" Type="PushButton" X="320" Y="60" Width="40" Height="17" Text="Show">
+						<Publish Property="COMBOVALUEFORMATTED" Order="1"  Value="You've chosen the [WIX_VERSIONS] version of the toolset" />
+					</Control>
+					<Control Id="LabelMain" Type="Text" X="10" Y="80" Width="360" Height="17" Property="COMBOVALUEFORMATTED" Text="[COMBOVALUEFORMATTED]" />
 
-        </Dialog>
-      </UI>-->
-    
-    <!--end code 1-->
-    <!--new code2-->
-    <!--UI DEsign
-    <UI>
-      <UIRef Id="WixUI_FeatureTree" />
-      <Dialog Id="MyCustomDlg"  Width="500" Height="260">
-      <Control Id="ComboBoxMain" Type="ComboBox" X="10" Y="60" Width="300" Height="17" Property="WIX_VERSIONS" >
-        <ComboBox Property="WIX_VERSIONS">
-          <ListItem Value="Windows Installer XML 3.0" />
-          <ListItem Value="Windows Installer XML 3.5" />
-          <ListItem Value="Windows Installer XML 3.6" />
-        </ComboBox>
-      </Control>
-      </Dialog>
-    </UI>
-    -->
-   
-    
-    
-    
-    <!--end 2-->
-    
-    
+				</Dialog>
+			</UI>-->
+		
+		<!--end code 1-->
+		<!--new code2-->
+		<!--UI DEsign
+		<UI>
+			<UIRef Id="WixUI_FeatureTree" />
+			<Dialog Id="MyCustomDlg"  Width="500" Height="260">
+			<Control Id="ComboBoxMain" Type="ComboBox" X="10" Y="60" Width="300" Height="17" Property="WIX_VERSIONS" >
+				<ComboBox Property="WIX_VERSIONS">
+					<ListItem Value="Windows Installer XML 3.0" />
+					<ListItem Value="Windows Installer XML 3.5" />
+					<ListItem Value="Windows Installer XML 3.6" />
+				</ComboBox>
+			</Control>
+			</Dialog>
+		</UI>
+		-->
+	 
+		
+		
+		
+		<!--end 2-->
+		<CustomAction Id="myActionId"
+
+		BinaryKey="myAction"
+
+		DllEntry="MySimpleAction"
+
+		Execute="deferred"
+
+		Return="check" />
+		
+		
+
+
+		<InstallExecuteSequence>
+			<Custom Action="myActionId" Before="InstallFinalize" />
+		</InstallExecuteSequence>
+		
 	</Product>
 
 	<Fragment>
@@ -63,97 +80,101 @@
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="INSTALLFOLDER" Name="MyWpfApplication" />
 			</Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="MyWpfApplication"/>
-      </Directory>
-      <Directory Id="DesktopFolder" Name="Desktop"/>
-      
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="MyWpfApplication" />
+			</Directory>
+			<Directory Id="DesktopFolder" Name="Desktop" />
+			
 		</Directory>
 	</Fragment>
 
-  <Fragment>
-    <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="a25e0656-bdb3-4f19-8a11-9c8b5917edca">
-        <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="MyWpfApplication"
-                  Description="MyWpfApplicatiion Description"
-                  Target="[INSTALLFOLDER]MyWpfApplication.exe"
-                  WorkingDirectory="INSTALLFOLDER"/>
-        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-      </Component>
-    </DirectoryRef>
+	<Fragment>
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="a25e0656-bdb3-4f19-8a11-9c8b5917edca">
+				<Shortcut Id="ApplicationStartMenuShortcut" Name="MyWpfApplication" Description="MyWpfApplicatiion Description" Target="[INSTALLFOLDER]MyWpfApplication.exe" WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
 
-    <DirectoryRef Id="DesktopFolder">
-      <Component Id="ApplicationShortcutDesktop" Guid="78011f21-15d9-4219-a180-93d3ee71b20a">
-        <Shortcut Id="ApplicationDesktopSortcut"
-                  Name="MyWpfApplication"
-                  Description="My WpfApplication Description"
-                  Target="[INSTALLFOLDER]MyWpfApplication.exe"
-                  WorkingDirectory="INSTALLFOLDER"/>
-        <RemoveFolder Id="RemoveDesktopFolder" Directory="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-      </Component>
-    </DirectoryRef>
-    
-    
-    
-    
-    
-   
-    
-  </Fragment>
-  
-  
- <!--new code 1-->
-  <!--<Fragment>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="MyWpfApplication" />
-      </Directory>
-    </Directory>
-  </Fragment>-->
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="ApplicationShortcutDesktop" Guid="78011f21-15d9-4219-a180-93d3ee71b20a">
+				<Shortcut Id="ApplicationDesktopSortcut" Name="MyWpfApplication" Description="My WpfApplication Description" Target="[INSTALLFOLDER]MyWpfApplication.exe" WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveDesktopFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\MyWpfApplication" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+		
+		
+		
+		
+		
+	 
+		
+	</Fragment>
 
-  <!--end1-->
+
+
+
 	
-  <Fragment>
-    
-    
-      
-    
-    <!--new code1-->
+	
 
-    <!--<ComponentGroup Id="ProComponents" Directory="INSTALLFOLDER">
-    </ComponentGroup>-->
+	
+	
 
-    <!--end 1-->
+	
+	
+	
+ <!--new code 1-->
+	<!--<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="MyWpfApplication" />
+			</Directory>
+		</Directory>
+	</Fragment>-->
+
+	<!--end1-->
+	
+	<Fragment>
+		
+		
+			
+		
+		<!--new code1-->
+
+		<!--<ComponentGroup Id="ProComponents" Directory="INSTALLFOLDER">
+		</ComponentGroup>-->
+
+		<!--end 1-->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      
-      
-      
-      
-      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			
+			
+			
+			
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
 
-      <!--   
-      
-      
-     
-      -->
+			<!--   
+			
+			
+		 
+			-->
 
-     
-      
-      
-      <!-- <Component Id="ProductComponent"> -->
+		 
+			
+			
+			<!-- <Component Id="ProductComponent"> -->
 
-     
+		 
 				<!-- TODO: Insert files, registry keys, and other resources here. -->
 			<!-- </Component> -->
 			<Component Id="MyWpfApplication.exe" Guid="deb5a0ec-f29a-45bd-ac4b-60b376b50195">
-			  <File Id="MyWpfApplication.exe" Name="MyWpfApplication.exe" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe" />
+				<File Id="MyWpfApplication.exe" Name="MyWpfApplication.exe" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe" />
 			</Component>
 			<Component Id="MyWpfApplication.exe.config" Guid="86279a82-98f2-4958-9a1b-2781db2fa489">
-			  <File Id="MyWpfApplication.exe.config" Name="MyWpfApplication.exe.config" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe.config" />
+				<File Id="MyWpfApplication.exe.config" Name="MyWpfApplication.exe.config" Source="$(var.MyWpfApplication_TargetDir)MyWpfApplication.exe.config" />
 			</Component>
+		 
 		</ComponentGroup>
 	</Fragment>
 </Wix>
